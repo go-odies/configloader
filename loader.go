@@ -16,7 +16,7 @@ const (
 	ConfigFileTypeInvalid ConfigFileType = ""
 )
 
-func Load[T any](opts ...Option) (T, error) {
+func Load[T any](opts ...Option) (*T, error) {
 	options := &Options{
 		FilePath:     "config.yaml",
 		EnvPrefix:    "",
@@ -30,20 +30,20 @@ func Load[T any](opts ...Option) (T, error) {
 	var config T
 	err := loadConfigFromFile(options.FilePath, &config)
 	if err != nil {
-		return config, err
+		return nil, err
 	}
 
 	err = loadConfigFromEnv(options.EnvPrefix, options.EnvSeparator, &config)
 	if err != nil {
-		return config, err
+		return nil, err
 	}
 
 	err = loadConfigFromArgs(&config)
 	if err != nil {
-		return config, err
+		return nil, err
 	}
 
-	return config, nil
+	return &config, nil
 }
 
 func loadConfigFromFile[T any](filePath string, config *T) error {

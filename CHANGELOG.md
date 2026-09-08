@@ -7,14 +7,10 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [0.1.0] - 2026-09-08
 
-### Changed
-
-- Moved the package from `pkg/configloader` to the module root so it imports as `github.com/go-odies/configloader`.
-
 ### Added
 
-- Initial release of the Go config loader library.
-- Added a generic config loading flow that reads values from a config file, applies environment overrides, and then applies CLI argument overrides in precedence order.
+- Initial release of the Go config loader library, importable as `github.com/go-odies/configloader`.
+- Added a generic config loading flow (`Load[T]`, returning `*T`) that reads values from a config file, applies environment overrides, and then applies CLI argument overrides in precedence order.
 - Added support for loading JSON and YAML configuration files with automatic type detection based on the file extension.
 - Added environment variable mapping for nested configuration keys using prefixes and separators, including support for tag-based and camelCase field matching.
 - Added command-line flag parsing for nested config keys such as `--database.host` and `--database.port`.
