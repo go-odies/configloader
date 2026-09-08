@@ -84,6 +84,27 @@ func main() {
 
 This version supports nested keys such as `--database.host=example.com` and environment names such as `APP_DATABASE__HOST`.
 
+### Composing Custom Loaders
+
+`Load[T]` is a convenience wrapper around `LoadCustom[T]`, which accepts any ordered list of `ConfigLoader[T]` implementations. Use it to skip a default source, reorder precedence, or plug in a source of your own:
+
+```go
+type ConfigLoader[T any] interface {
+	Load(cfg *T) error
+}
+
+cfg, err := configloader.LoadCustom[Config](
+	configloader.NewFileLoader[Config]("./config.json"),
+	configloader.NewEnvLoader[Config]("APP", "__"),
+	// configloader.NewArgsLoader[Config](), // omitted: CLI overrides disabled
+)
+if err != nil {
+	panic(err)
+}
+```
+
+Each loader in the list is applied in order, so later loaders override values set by earlier ones. Implement `ConfigLoader[T]` on your own type to add sources such as a remote config service or a secrets manager.
+
 ## Quick Start
 
 1. Clone the repository and open it in the dev container or local Go environment.

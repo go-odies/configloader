@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2026-09-08
+
+### Added
+
+- Added a `ConfigLoader[T]` interface so any source can plug into the loading pipeline via a single `Load(cfg *T) error` method.
+- Added `LoadCustom[T](loaders ...ConfigLoader[T]) (*T, error)` to compose an arbitrary, ordered set of loaders, with later loaders overriding earlier ones.
+- Added `FileLoader[T]`, `EnvLoader[T]`, and `ArgsLoader[T]` types (with `NewFileLoader`, `NewEnvLoader`, `NewArgsLoader` constructors) wrapping the existing file, environment, and CLI argument loading logic as `ConfigLoader[T]` implementations.
+- Added tests covering `LoadCustom` ordering and error propagation, and covering the new loader constructor types.
+
+### Changed
+
+- `Load[T]` is now implemented in terms of `LoadCustom`, composing the default file, env, and args loaders in precedence order.
+
 ## [0.1.0] - 2026-09-08
 
 ### Added

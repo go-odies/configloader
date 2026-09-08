@@ -9,6 +9,22 @@ import (
 	"unicode"
 )
 
+type EnvLoader[T any] struct {
+	envPrefix    string
+	envSeparator string
+}
+
+func NewEnvLoader[T any](envPrefix string, envSeparator string) *EnvLoader[T] {
+	return &EnvLoader[T]{
+		envPrefix:    envPrefix,
+		envSeparator: envSeparator,
+	}
+}
+
+func (e *EnvLoader[T]) Load(cfg *T) error {
+	return loadConfigFromEnv(e.envPrefix, e.envSeparator, cfg)
+}
+
 func loadConfigFromEnv[T any](envPrefix string, envSeparator string, config *T) error {
 	if config == nil {
 		return nil

@@ -8,6 +8,16 @@ import (
 	"strings"
 )
 
+type ArgsLoader[T any] struct{}
+
+func NewArgsLoader[T any]() *ArgsLoader[T] {
+	return &ArgsLoader[T]{}
+}
+
+func (a *ArgsLoader[T]) Load(cfg *T) error {
+	return loadConfigFromArgs(cfg)
+}
+
 func loadConfigFromArgs[T any](config *T) error {
 	if config == nil {
 		return nil
