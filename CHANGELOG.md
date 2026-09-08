@@ -7,6 +7,10 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [0.1.0] - 2026-09-08
 
+### Changed
+
+- Moved the package from `pkg/configloader` to the module root so it imports as `github.com/go-odies/configloader`.
+
 ### Added
 
 - Initial release of the Go config loader library.

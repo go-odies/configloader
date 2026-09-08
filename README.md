@@ -60,7 +60,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/go-odies/configloader/pkg/configloader"
+	"github.com/go-odies/configloader"
 )
 
 type Config struct {
