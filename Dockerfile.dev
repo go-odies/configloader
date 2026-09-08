@@ -1,0 +1,44 @@
+# Development container for Go projects. This image includes common tools and is optimized for development workflows.
+# Docker.dev
+FROM golang:1.26-alpine
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install common development tools
+RUN apk update && apk add --no-cache \
+  ca-certificates \
+  curl \
+  git \
+  openssh-client \
+  bash \
+  zsh \
+  make \
+  gcc \
+  g++ \
+  libc-dev \
+  pkgconfig \
+  jq \
+  vim \
+  unzip
+
+# Go environment
+ENV GOPATH=/go
+ENV PATH=/go/bin:/usr/local/go/bin:$PATH
+
+WORKDIR /app
+
+# Optional but very common Go dev tools
+RUN go install golang.org/x/tools/gopls@v0.21.0 \
+  && go install github.com/go-delve/delve/cmd/dlv@v1.25.1 \
+  && go install github.com/air-verse/air@v1.62.0
+
+# oh-my-zsh + powerlevel10k (classic style, preconfigured non-interactively)
+ENV ZSH=/root/.oh-my-zsh \
+  ZSH_CUSTOM=/root/.oh-my-zsh/custom
+RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended \
+  && git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$ZSH_CUSTOM/themes/powerlevel10k" \
+  && sed -i 's|^ZSH_THEME=.*|ZSH_THEME="powerlevel10k/powerlevel10k"|' /root/.zshrc \
+  && cp "$ZSH_CUSTOM/themes/powerlevel10k/config/p10k-classic.zsh" /root/.p10k.zsh \
+  && printf '\n# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.\n[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh\n' >> /root/.zshrc
+
+CMD ["zsh"]

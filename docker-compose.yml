@@ -1,0 +1,15 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./:/app:cached
+    environment:
+      INSIDE_DEV_CONTAINER: "true"
+    restart: unless-stopped
+    command: tail -f /dev/null  # Keeps the container running for development
+    extra_hosts:
+    - "host.docker.internal:host-gateway"
