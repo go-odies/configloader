@@ -192,6 +192,27 @@ func TestLoadIntegration(t *testing.T) {
 	}
 }
 
+func TestLoadWithoutFilePathSkipsFileLoader(t *testing.T) {
+	oldArgs := os.Args
+	os.Args = []string{"app"}
+	t.Cleanup(func() { os.Args = oldArgs })
+
+	t.Setenv("APP_HOST", "prod.example.com")
+
+	type config struct {
+		Host string `json:"host"`
+	}
+
+	cfg, err := Load[config](WithEnvPrefix("APP"), WithEnvSeparator("__"))
+	if err != nil {
+		t.Fatalf("load config without file path: %v", err)
+	}
+
+	if cfg.Host != "prod.example.com" {
+		t.Fatalf("expected host %q, got %q", "prod.example.com", cfg.Host)
+	}
+}
+
 func TestLoadConfigFromArgsOverridesEnvAndFile(t *testing.T) {
 	oldArgs := os.Args
 	os.Args = []string{"app", "--host=0.0.0.0", "--database.host=db.cli", "--database.port=7443"}

@@ -10,7 +10,7 @@ const (
 
 func Load[T any](opts ...Option) (*T, error) {
 	options := &Options{
-		FilePath:     "config.yaml",
+		FilePath:     "",
 		EnvPrefix:    "",
 		EnvSeparator: "__",
 	}
@@ -19,9 +19,14 @@ func Load[T any](opts ...Option) (*T, error) {
 		opt(options)
 	}
 
-	return LoadCustom(
-		NewFileLoader[T](options.FilePath),
+	loaders := make([]ConfigLoader[T], 0, 3)
+	if options.FilePath != "" {
+		loaders = append(loaders, NewFileLoader[T](options.FilePath))
+	}
+	loaders = append(loaders,
 		NewEnvLoader[T](options.EnvPrefix, options.EnvSeparator),
 		NewArgsLoader[T](),
 	)
+
+	return LoadCustom(loaders...)
 }
