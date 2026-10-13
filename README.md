@@ -84,6 +84,19 @@ func main() {
 
 This version supports nested keys such as `--database.host=example.com` and environment names such as `APP_DATABASE__HOST`.
 
+### Default Values
+
+Struct fields can declare a fallback value with a `default` tag. Defaults are applied before any other source, so a config file, environment variable, or CLI flag always takes precedence over them:
+
+```go
+type Config struct {
+	Host string `json:"host" default:"localhost"`
+	Port int    `json:"port" default:"8080"`
+}
+```
+
+A default is only applied when the field still has its zero value, so it never overwrites a value already set earlier in your struct literal.
+
 ### Composing Custom Loaders
 
 `Load[T]` is a convenience wrapper around `LoadCustom[T]`, which accepts any ordered list of `ConfigLoader[T]` implementations. Use it to skip a default source, reorder precedence, or plug in a source of your own:
@@ -94,6 +107,7 @@ type ConfigLoader[T any] interface {
 }
 
 cfg, err := configloader.LoadCustom[Config](
+	configloader.NewDefaultsLoader[Config](),
 	configloader.NewFileLoader[Config]("./config.json"),
 	configloader.NewEnvLoader[Config]("APP", "__"),
 	// configloader.NewArgsLoader[Config](), // omitted: CLI overrides disabled

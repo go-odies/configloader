@@ -19,7 +19,8 @@ func Load[T any](opts ...Option) (*T, error) {
 		opt(options)
 	}
 
-	loaders := make([]ConfigLoader[T], 0, 3)
+	loaders := make([]ConfigLoader[T], 0, 4)
+	loaders = append(loaders, NewDefaultsLoader[T]())
 	if options.FilePath != "" {
 		loaders = append(loaders, NewFileLoader[T](options.FilePath))
 	}

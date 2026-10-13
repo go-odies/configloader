@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-10-13
+
+### Added
+
+- Added `DefaultsLoader[T]` (with a `NewDefaultsLoader` constructor) that applies struct-tag defaults declared as `default:"..."`, filling any field that still holds its zero value.
+- `Load[T]` now runs the defaults loader first, so config file, environment, and CLI sources still override defaults in the existing precedence order.
+- Added tests covering default application, nested structs, existing-value precedence, and integration through `Load`.
+
 ## [0.2.1] - 2026-09-08
 
 ### Changed
